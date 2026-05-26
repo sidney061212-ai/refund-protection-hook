@@ -35,7 +35,7 @@ Expected local evidence:
 
 ```text
 Compiled 24 source files with solc 0.8.26
-15 passing
+18 passing
 Submission check passed: compile, tests, and demo all completed successfully.
 ```
 
@@ -46,12 +46,14 @@ Implemented artifacts:
 - `src/UniswapV4RefundProtectionAdapter.sol`: real Uniswap v4 `BaseHook` adapter with `afterSwap` enabled.
 - `scripts/mine-hook-address.js`: CREATE2 hook-address mining helper for v4 permission bits.
 - `scripts/deploy-xlayer.js`: X Layer testnet deployment script for core contracts.
+- `scripts/deploy-v4-adapter.js`: CREATE2 deployment for the mined v4 `afterSwap` hook address, plus recorder wiring.
+- `scripts/initialize-v4-pool.js`: v4 PoolManager initialization script for the hook-enabled pool key.
 - `scripts/demo.js`: local end-to-end demo covering refund and finalize paths.
 
 ## Honest Limitations
 
 - No live X Layer address is claimed without a funded deployer wallet.
-- The adapter compiles against current Uniswap v4 packages, but a live v4 pool/hook transaction still requires X Layer gas, a deployed PoolManager address, address mining, and pool initialization.
+- The adapter compiles against current Uniswap v4 packages, and the repository now includes the scripts for mining, deploying, wiring, and initializing the hook-enabled pool. Broadcasting still requires X Layer gas and real submission addresses.
 - The local tests use Ganache for deterministic execution, not a fork of X Layer.
 
 ## Why This Should Score Well

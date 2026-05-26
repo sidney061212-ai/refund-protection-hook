@@ -27,10 +27,10 @@
 1. Show the README top section and the judge quick read.
 2. Run `npm install`.
 3. Run `npm run check`.
-4. Point out `15 passing`.
+4. Point out `18 passing`.
 5. Show the demo output: premium quote, max refundable amount, refund payout, finalize path.
 6. Open `src/UniswapV4RefundProtectionAdapter.sol` and show `afterSwap: true`.
-7. Open `DEPLOYMENTS.md` and state that live addresses are pending only because no funded X Layer testnet deployer was available.
+7. Open `DEPLOYMENTS.md` and state that the scripts now cover core deployment, CREATE2 v4 adapter deployment, and pool initialization; live addresses are pending only because no funded X Layer deployer was available.
 
 ## Short voiceover
 

@@ -20,6 +20,8 @@ This is not a generic vault bolted beside a DEX. It is a pool-level launch primi
 - Protected swap recorder designed to be called by a Uniswap v4 `afterSwap` hook adapter.
 - Real compile-capable Uniswap v4 adapter in `src/UniswapV4RefundProtectionAdapter.sol`.
 - Hook-address mining helper for Uniswap v4 permission-bit deployment.
+- CREATE2 adapter deployment script that deploys the mined hook address and sets it as the authorized recorder.
+- Pool initialization script for a hook-enabled Uniswap v4 PoolManager key.
 - Refund path: buyer returns the received project token and receives the protected stable payout minus refund fee.
 - Finalize path: after the refund window expires, locked exposure is released.
 - Full local tests using `solc-js + ganache + ethers`.
@@ -39,7 +41,7 @@ Current local result:
 
 ```text
 Compiled 24 source files with solc 0.8.26
-15 passing
+18 passing
 ```
 
 Covered flows:
@@ -58,14 +60,19 @@ Covered flows:
 13. Expired refund rejection.
 14. Token-balance enforcement on refund.
 15. Fee split verification.
+16. v4 afterSwap permission flag validation.
+17. CREATE2 hook address prediction.
+18. v4 PoolKey currency sorting.
 
 ## X Layer fit
-The contracts are EVM-compatible Solidity `0.8.26`, so they can be deployed to X Layer testnet. Official X Layer testnet uses Chain ID `1952` and OKB as gas.
+The contracts are EVM-compatible Solidity `0.8.26`. X Layer mainnet Chain ID is `196`, and the official Uniswap v4 X Layer PoolManager is `0x360e68faccca8ca495c1b759fd9eee466db9fb32`. X Layer testnet Chain ID is `1952`; testnet deployment needs a live or self-deployed v4 PoolManager address.
 
 ## Submission status
 
 - Core contracts: ready
 - Real v4 adapter: ready and compiling
+- CREATE2 adapter deployment: scripted
+- v4 pool initialization: scripted
 - Local tests: passing
 - Demo script: ready
 - X Layer deployment script: ready
@@ -73,6 +80,6 @@ The contracts are EVM-compatible Solidity `0.8.26`, so they can be deployed to X
 
 ## Remaining live-network step
 
-This repository now includes the real `BaseHook` adapter and the hook-address mining script. The remaining step for a full onchain submission is broadcasting deployment transactions with a funded X Layer testnet wallet, mining/deploying the valid v4 hook address, creating a v4 pool if PoolManager is available, and filling the resulting addresses into `DEPLOYMENTS.md`.
+This repository now includes the real `BaseHook` adapter, hook-address mining, CREATE2 adapter deployment, recorder wiring, and v4 pool initialization scripts. The remaining step for a full onchain submission is broadcasting deployment transactions with a funded X Layer wallet, creating the hook-enabled v4 pool, and filling the resulting addresses into `DEPLOYMENTS.md`.
 
 No unverified live addresses are included in this submission package.

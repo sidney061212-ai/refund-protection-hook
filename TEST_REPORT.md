@@ -16,13 +16,14 @@ npm run compile
 npm test
 npm run demo
 V4_POOL_MANAGER_ADDRESS=0x0000000000000000000000000000000000000001 REFUND_PROTECTION_CORE_ADDRESS=0x0000000000000000000000000000000000000002 npm run mine:hook
+npm test -- --grep "v4 deployment utilities"
 ```
 
 Current automated result:
 
 ```text
 Compiled 24 source files with solc 0.8.26
-15 passing
+18 passing
 ```
 
 Covered scenarios:
@@ -42,10 +43,13 @@ Covered scenarios:
 13. Refunds after expiry are rejected.
 14. Refunds fail if the buyer no longer holds enough project tokens.
 15. Project/protocol/vault fee split is consistent across premium collection and refund settlement.
+16. v4 afterSwap permission flag validation.
+17. CREATE2 hook address prediction.
+18. v4 PoolKey currency sorting.
 
 Notes:
 
 - Ganache emits a `µWS` binary compatibility warning under Node `24.x` and falls back to a pure Node implementation.
 - The warning does not block compilation, tests, or the local demo flow.
 - `npm audit fix` was run. Remaining audit warnings are from local development dependencies (`ganache`, `solc`, `ethers`, `mocha`) and were not force-fixed because the suggested forced changes downgrade or break the current verified toolchain.
-- Hook address mining was smoke-tested with dummy constructor addresses and produced an address whose low permission bits match the `AFTER_SWAP` flag (`0x40`).
+- Hook address mining and deployment utility logic were smoke-tested with dummy constructor addresses and pure unit tests. The mined address low permission bits match the `AFTER_SWAP` flag (`0x40`).

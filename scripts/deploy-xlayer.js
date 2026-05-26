@@ -16,8 +16,11 @@ async function deploy(wallet, art, args = []) {
 
 async function main() {
   if (!process.env.PRIVATE_KEY) throw new Error("PRIVATE_KEY missing");
-  const rpc = process.env.XLAYER_TESTNET_RPC_URL || "https://testrpc.xlayer.tech/terigon";
-  const provider = new ethers.JsonRpcProvider(rpc, 1952);
+  const chainId = Number(process.env.XLAYER_CHAIN_ID || 1952);
+  const rpc = chainId === 196
+    ? (process.env.XLAYER_RPC_URL || "https://rpc.xlayer.tech")
+    : (process.env.XLAYER_TESTNET_RPC_URL || "https://testrpc.xlayer.tech/terigon");
+  const provider = new ethers.JsonRpcProvider(rpc, chainId);
   const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
   const contracts = compileProject().contracts;
 
@@ -52,7 +55,7 @@ async function main() {
   };
   await (await hook.configurePair(pairConfig)).wait();
 
-  console.log("Network: X Layer Testnet (Chain ID 1952)");
+  console.log(`Network: X Layer (Chain ID ${chainId})`);
   console.log("MockUSDC:", await stable.getAddress());
   console.log("MockTOKEN:", await token.getAddress());
   console.log("RefundInsuranceVault:", await vault.getAddress());
@@ -61,7 +64,9 @@ async function main() {
 
   if (process.env.V4_POOL_MANAGER_ADDRESS) {
     console.log("V4 pool manager set in env:", process.env.V4_POOL_MANAGER_ADDRESS);
-    console.log("Next step: run `npm run mine:hook` with V4_POOL_MANAGER_ADDRESS and REFUND_PROTECTION_CORE_ADDRESS to mine a valid afterSwap hook address.");
+    console.log("Next step:");
+    console.log(`REFUND_PROTECTION_CORE_ADDRESS=${await hook.getAddress()} npm run mine:hook`);
+    console.log("Then run `npm run deploy:v4-adapter` with the printed CREATE2_SALT.");
   } else {
     console.log("V4 adapter not deployed by this script.");
     console.log("To deploy the real BaseHook adapter, set V4_POOL_MANAGER_ADDRESS and mine a CREATE2 address whose low bits match AFTER_SWAP.");

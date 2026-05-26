@@ -8,7 +8,9 @@
     "demo": "node scripts/demo.js",
     "check": "node scripts/check-submission.js",
     "mine:hook": "node scripts/mine-hook-address.js",
-    "deploy:xlayer": "node scripts/deploy-xlayer.js"
+    "deploy:xlayer": "node scripts/deploy-xlayer.js",
+    "deploy:v4-adapter": "node scripts/deploy-v4-adapter.js",
+    "initialize:v4-pool": "node scripts/initialize-v4-pool.js"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "^5.0.2",

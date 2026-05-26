@@ -4,18 +4,20 @@
 
 1. Run `npm install`.
 2. Run `npm run check`.
-3. Confirm the output includes `15 passing`.
-4. If you obtain X Layer testnet OKB, run `npm run deploy:xlayer`.
-5. If you obtain a v4 PoolManager address, run `npm run mine:hook` with `V4_POOL_MANAGER_ADDRESS` and `REFUND_PROTECTION_CORE_ADDRESS`.
-6. Paste any real addresses into `DEPLOYMENTS.md`, `README.md`, and `HACKATHON_SUBMISSION.md`.
-7. Do not paste placeholder addresses into the form.
+3. Confirm the output includes `18 passing`.
+4. If you obtain X Layer OKB, run `npm run deploy:xlayer`.
+5. Run `npm run mine:hook` with `V4_POOL_MANAGER_ADDRESS` and `REFUND_PROTECTION_CORE_ADDRESS`.
+6. Run `npm run deploy:v4-adapter` with the mined `CREATE2_SALT`.
+7. Run `npm run initialize:v4-pool` with `V4_HOOK_ADDRESS`, `POOL_TOKEN_A`, and `POOL_TOKEN_B`.
+8. Paste any real addresses into `DEPLOYMENTS.md`, `README.md`, and `HACKATHON_SUBMISSION.md`.
+9. Do not paste placeholder addresses into the form.
 
 ## Submission form fields
 
 - Project name: `Refund Protection Hook`
 - One-liner: `A Uniswap v4 afterSwap hook that lets launch-pool buyers opt into capped 24-hour refund protection backed by an onchain insurance vault.`
 - Category: `DeFi Hook / launch-pool protection`
-- Chain: `X Layer testnet intended; local demo fully verified; live addresses pending funded deployer gas`
+- Chain: `X Layer; local demo fully verified; live addresses pending funded deployer gas`
 - Repository: paste the GitHub repository URL after pushing.
 - Demo video: paste the video URL after recording.
 - Contract addresses: paste real X Layer addresses only.

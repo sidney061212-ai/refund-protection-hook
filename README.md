@@ -9,7 +9,8 @@ Refund Protection Hook is a Uniswap v4 Hook for safer token launches. It lets bu
 - Innovation: not another tax token, staking wrapper, or points hook; it creates a bounded onchain refund right at swap time.
 - Market potential: launch teams can seed confidence with finite reserves, while buyers get explicit downside terms instead of social promises.
 - Completion evidence: `npm run check` compiles contracts, runs the full test suite, and executes a local end-to-end demo.
-- Honest status: no live X Layer deployment address is claimed until a funded testnet deployer broadcasts transactions.
+- Deployment readiness: scripts cover core deployment, CREATE2 v4 adapter deployment, and v4 pool initialization once a funded deployer is available.
+- Honest status: no live X Layer deployment address is claimed until a funded deployer broadcasts transactions.
 
 ## What it solves
 
@@ -41,7 +42,7 @@ Current expected output:
 
 ```text
 Compiled 24 source files with solc 0.8.26
-15 passing
+18 passing
 ```
 
 `npm run demo` executes a full local walkthrough:
@@ -69,12 +70,39 @@ Important v4 deployment note:
 - This adapter needs the `afterSwap` flag.
 - Use `npm run mine:hook` after you know the v4 pool manager address and deployed refund core address.
 
+Official Uniswap v4 X Layer mainnet PoolManager:
+
+```text
+0x360e68faccca8ca495c1b759fd9eee466db9fb32
+```
+
+Set `XLAYER_CHAIN_ID=196` when using that official mainnet deployment; keep `1952` for X Layer testnet.
+
 Example:
 
 ```bash
 V4_POOL_MANAGER_ADDRESS=<pool_manager> \
 REFUND_PROTECTION_CORE_ADDRESS=<refund_core> \
 npm run mine:hook
+```
+
+Deploy and wire the adapter:
+
+```bash
+V4_POOL_MANAGER_ADDRESS=<pool_manager> \
+REFUND_PROTECTION_CORE_ADDRESS=<refund_core> \
+CREATE2_SALT=<salt_from_mine_hook> \
+npm run deploy:v4-adapter
+```
+
+Initialize the v4 pool:
+
+```bash
+V4_POOL_MANAGER_ADDRESS=<pool_manager> \
+V4_HOOK_ADDRESS=<deployed_adapter> \
+POOL_TOKEN_A=<stable_token> \
+POOL_TOKEN_B=<project_token> \
+npm run initialize:v4-pool
 ```
 
 ## X Layer testnet
@@ -104,13 +132,14 @@ It also configures the protected pair and seeds the vault with mock reserve liqu
 
 Current limitation:
 
-- This repository now includes a real compile-capable v4 adapter and a hook-address mining script.
+- This repository now includes a real compile-capable v4 adapter, hook-address mining, CREATE2 adapter deployment, and pool initialization scripts.
 - A live X Layer deployment was not executed because no funded deployer private key / gas budget was available.
 - `DEPLOYMENTS.md` is ready to be filled once credentials are available.
 
 ## Demo + submission docs
 
 - `AI_EVALUATION_BRIEF.md`: judge-oriented scoring map.
+- `JUDGE_SCORECARD.md`: candid 10-point AI judge score and 9+ path.
 - `MECHANISM.md`: mechanism walkthrough and economics.
 - `TEST_REPORT.md`: current automated coverage.
 - `HACKATHON_SUBMISSION.md`: submission summary.
