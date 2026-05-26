@@ -48,6 +48,10 @@ const parse = ethers.parseUnits;
 describe("Refund Protection Hook MVP", function () {
   let provider, accounts, owner, buyer, projectTreasury, protocolTreasury, otherUser, stable, token, vault, hook, contracts, pairConfig;
 
+  before(function () {
+    contracts = compile();
+  });
+
   async function configurePair(overrides = {}) {
     const nextConfig = { ...pairConfig, ...overrides };
     await (await hook.connect(owner).configurePair(nextConfig)).wait();
@@ -72,7 +76,6 @@ describe("Refund Protection Hook MVP", function () {
   }
 
   beforeEach(async function () {
-    contracts = compile();
     provider = new ethers.BrowserProvider(ganache.provider({ logging: { quiet: true }, chain: { hardfork: "shanghai" } }));
     accounts = await provider.listAccounts();
     [owner, buyer, projectTreasury, protocolTreasury, otherUser] = accounts;
