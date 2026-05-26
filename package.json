@@ -7,10 +7,14 @@
     "test": "mocha --timeout 60000 --exit",
     "demo": "node scripts/demo.js",
     "check": "node scripts/check-submission.js",
+    "score": "node scripts/submission-score.js",
+    "score:verified": "node scripts/submission-score.js --local-check-passing",
+    "score:strict": "node scripts/submission-score.js --local-check-passing --strict",
     "mine:hook": "node scripts/mine-hook-address.js",
     "deploy:xlayer": "node scripts/deploy-xlayer.js",
     "deploy:v4-adapter": "node scripts/deploy-v4-adapter.js",
-    "initialize:v4-pool": "node scripts/initialize-v4-pool.js"
+    "initialize:v4-pool": "node scripts/initialize-v4-pool.js",
+    "demo:v4-mainnet": "node scripts/v4-demo-flow.js"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "^5.0.2",

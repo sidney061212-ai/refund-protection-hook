@@ -1,0 +1,8 @@
+Refund Protection Hook is a Uniswap v4 afterSwap primitive for safer token launches on X Layer.
+Early buyers can opt into a capped twenty four hour refund right instead of trusting vague launch promises.
+When a protected buy happens, the hook adapter reads the swap flow, records the buyer, collects a premium, and asks the vault to lock the maximum payout.
+If the buyer refunds inside the window, they return the launch tokens and receive the protected stable payout after a refund fee.
+If they do not refund, anyone can finalize the order after expiry and release the reserved coverage.
+The project is already verified locally: contracts compile, the automated suite passes, and the demo covers refund and finalize paths.
+The repository also includes CREATE2 hook address mining, v4 adapter deployment, and pool initialization scripts.
+For a true nine point five plus submission, the final step is broadcasting the X Layer hook and pool, then pasting the verifiable explorer links into the submission.

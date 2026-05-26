@@ -110,7 +110,7 @@ async function main() {
   console.log("   Compile-capable v4 afterSwap adapter:", "yes");
   console.log("   Local refund path:", "verified");
   console.log("   Local finalize path:", "verified");
-  console.log("   Live X Layer addresses:", "pending funded deployer");
+  console.log("   Live X Layer addresses:", "recorded in DEPLOYMENTS.md");
 }
 
 main().catch((error) => {

@@ -10,8 +10,17 @@ function artifact(contracts, file, name) {
 async function deploy(wallet, art, args = []) {
   const f = new ethers.ContractFactory(art.abi, art.bytecode, wallet);
   const c = await f.deploy(...args);
+  const tx = c.deploymentTransaction();
   await c.waitForDeployment();
-  return c;
+  return { contract: c, txHash: tx.hash };
+}
+
+async function sendAndWait(label, txPromise) {
+  const tx = await txPromise;
+  console.log(`${label} tx:`, tx.hash);
+  const receipt = await tx.wait();
+  if (receipt.status !== 1) throw new Error(`${label} reverted: ${tx.hash}`);
+  return tx.hash;
 }
 
 async function main() {
@@ -28,16 +37,26 @@ async function main() {
   const protocolTreasury = process.env.PROTOCOL_TREASURY || wallet.address;
   const initialReserve = ethers.parseUnits(process.env.INITIAL_RESERVE_USDC || "10000", 6);
 
-  const stable = await deploy(wallet, artifact(contracts, "MockERC20.sol", "MockERC20"), ["Mock USDC", "mUSDC", 6]);
-  const token = await deploy(wallet, artifact(contracts, "MockERC20.sol", "MockERC20"), ["Launch Token", "LCH", 18]);
-  const vault = await deploy(wallet, artifact(contracts, "RefundInsuranceVault.sol", "RefundInsuranceVault"), [projectTreasury, protocolTreasury]);
-  const hook = await deploy(wallet, artifact(contracts, "RefundProtectionHook.sol", "RefundProtectionHook"), [await vault.getAddress()]);
+  const stableDeployment = await deploy(wallet, artifact(contracts, "MockERC20.sol", "MockERC20"), ["Mock USDC", "mUSDC", 6]);
+  const tokenDeployment = await deploy(wallet, artifact(contracts, "MockERC20.sol", "MockERC20"), ["Launch Token", "LCH", 18]);
+  const vaultDeployment = await deploy(wallet, artifact(contracts, "RefundInsuranceVault.sol", "RefundInsuranceVault"), [projectTreasury, protocolTreasury]);
+  const hookDeployment = await deploy(wallet, artifact(contracts, "RefundProtectionHook.sol", "RefundProtectionHook"), [await vaultDeployment.contract.getAddress()]);
+  const stable = stableDeployment.contract;
+  const token = tokenDeployment.contract;
+  const vault = vaultDeployment.contract;
+  const hook = hookDeployment.contract;
 
-  await (await vault.setHook(await hook.getAddress())).wait();
-  await (await vault.setStable(await stable.getAddress(), true)).wait();
-  await (await stable.mint(wallet.address, initialReserve)).wait();
-  await (await stable.approve(await vault.getAddress(), initialReserve)).wait();
-  await (await vault.deposit(await stable.getAddress(), initialReserve)).wait();
+  const txs = {
+    mockUSDCDeploy: stableDeployment.txHash,
+    mockTOKENDeploy: tokenDeployment.txHash,
+    vaultDeploy: vaultDeployment.txHash,
+    hookDeploy: hookDeployment.txHash
+  };
+  txs.setHook = await sendAndWait("set vault hook", vault.setHook(await hook.getAddress()));
+  txs.setStable = await sendAndWait("support stable", vault.setStable(await stable.getAddress(), true));
+  txs.mintReserve = await sendAndWait("mint reserve stable", stable.mint(wallet.address, initialReserve));
+  txs.approveReserve = await sendAndWait("approve reserve deposit", stable.approve(await vault.getAddress(), initialReserve));
+  txs.depositReserve = await sendAndWait("deposit reserve", vault.deposit(await stable.getAddress(), initialReserve));
 
   const pairConfig = {
     enabled: true,
@@ -53,7 +72,7 @@ async function main() {
     payoutBps: Number(process.env.PAYOUT_BPS || 9500),
     maxExposureBps: Number(process.env.MAX_EXPOSURE_BPS || 5000)
   };
-  await (await hook.configurePair(pairConfig)).wait();
+  txs.configurePair = await sendAndWait("configure protected pair", hook.configurePair(pairConfig));
 
   console.log(`Network: X Layer (Chain ID ${chainId})`);
   console.log("MockUSDC:", await stable.getAddress());
@@ -61,6 +80,14 @@ async function main() {
   console.log("RefundInsuranceVault:", await vault.getAddress());
   console.log("RefundProtectionHook:", await hook.getAddress());
   console.log("Configured pairId:", await hook.pairId(await stable.getAddress(), await token.getAddress()));
+  console.log("Transaction hashes:", JSON.stringify(txs, null, 2));
+  console.log("\nAdd these to .env for the v4 steps:");
+  console.log(`MOCK_USDC_ADDRESS=${await stable.getAddress()}`);
+  console.log(`MOCK_TOKEN_ADDRESS=${await token.getAddress()}`);
+  console.log(`REFUND_INSURANCE_VAULT_ADDRESS=${await vault.getAddress()}`);
+  console.log(`REFUND_PROTECTION_CORE_ADDRESS=${await hook.getAddress()}`);
+  console.log(`POOL_TOKEN_A=${await stable.getAddress()}`);
+  console.log(`POOL_TOKEN_B=${await token.getAddress()}`);
 
   if (process.env.V4_POOL_MANAGER_ADDRESS) {
     console.log("V4 pool manager set in env:", process.env.V4_POOL_MANAGER_ADDRESS);

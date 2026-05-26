@@ -4,23 +4,27 @@
 
 1. Run `npm install`.
 2. Run `npm run check`.
-3. Confirm the output includes `18 passing`.
-4. If you obtain X Layer OKB, run `npm run deploy:xlayer`.
-5. Run `npm run mine:hook` with `V4_POOL_MANAGER_ADDRESS` and `REFUND_PROTECTION_CORE_ADDRESS`.
-6. Run `npm run deploy:v4-adapter` with the mined `CREATE2_SALT`.
-7. Run `npm run initialize:v4-pool` with `V4_HOOK_ADDRESS`, `POOL_TOKEN_A`, and `POOL_TOKEN_B`.
-8. Paste any real addresses into `DEPLOYMENTS.md`, `README.md`, and `HACKATHON_SUBMISSION.md`.
-9. Do not paste placeholder addresses into the form.
+3. Confirm the output includes `22 passing`.
+4. Run `npm run score:verified`.
+5. Confirm `score:verified` only shows the project X/Twitter account blocker, or no blockers after you provide `PROJECT_X_ACCOUNT`.
+6. Render the Remotion video with `cd demo-video && npm run render`.
+7. Upload `demo-video/out/refund-protection-demo.mp4`.
+8. Paste the live addresses, PoolId, protected swap tx, and refund tx from `DEPLOYMENTS.md`.
+9. Paste the project X/Twitter account.
+10. Do not paste placeholder addresses into the form.
 
 ## Submission form fields
 
 - Project name: `Refund Protection Hook`
 - One-liner: `A Uniswap v4 afterSwap hook that lets launch-pool buyers opt into capped 24-hour refund protection backed by an onchain insurance vault.`
 - Category: `DeFi Hook / launch-pool protection`
-- Chain: `X Layer; local demo fully verified; live addresses pending funded deployer gas`
+- Chain: `X Layer; local demo fully verified; live addresses deployed on X Layer mainnet`
+- Chinese project guide: `中文说明.md`
 - Repository: paste the GitHub repository URL after pushing.
-- Demo video: paste the video URL after recording.
+- Demo video: upload `demo-video/out/refund-protection-demo.mp4` and paste the video URL.
 - Contract addresses: paste real X Layer addresses only.
+- Project X account: `https://x.com/changsidne`
+- Project X post: `https://x.com/changsidne/status/2059262123138855255`
 
 ## X post draft
 

@@ -1,4 +1,5 @@
 const { compileProject } = require("./solc-utils");
+require("dotenv").config();
 const {
   AFTER_SWAP_FLAG,
   CREATE2_DEPLOYER,

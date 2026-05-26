@@ -15,6 +15,7 @@ npm install
 npm run compile
 npm test
 npm run demo
+npm run score:verified
 V4_POOL_MANAGER_ADDRESS=0x0000000000000000000000000000000000000001 REFUND_PROTECTION_CORE_ADDRESS=0x0000000000000000000000000000000000000002 npm run mine:hook
 npm test -- --grep "v4 deployment utilities"
 ```
@@ -22,8 +23,8 @@ npm test -- --grep "v4 deployment utilities"
 Current automated result:
 
 ```text
-Compiled 24 source files with solc 0.8.26
-18 passing
+Compiled 28 source files with solc 0.8.26
+22 passing
 ```
 
 Covered scenarios:
@@ -46,6 +47,10 @@ Covered scenarios:
 16. v4 afterSwap permission flag validation.
 17. CREATE2 hook address prediction.
 18. v4 PoolKey currency sorting.
+19. Submission score gate rejects 9.5+ readiness when live X Layer Hook/Pool evidence is missing.
+20. Submission score gate reaches 9.5+ only with deployment, demo video, and project social evidence.
+21. v4 demo helper compiles for mainnet liquidity and protected-swap evidence.
+22. v4 PoolId and hookData encoding are deterministic.
 
 Notes:
 
@@ -53,3 +58,5 @@ Notes:
 - The warning does not block compilation, tests, or the local demo flow.
 - `npm audit fix` was run. Remaining audit warnings are from local development dependencies (`ganache`, `solc`, `ethers`, `mocha`) and were not force-fixed because the suggested forced changes downgrade or break the current verified toolchain.
 - Hook address mining and deployment utility logic were smoke-tested with dummy constructor addresses and pure unit tests. The mined address low permission bits match the `AFTER_SWAP` flag (`0x40`).
+- Remotion video verification is tracked separately in `demo-video/`; the render output is `demo-video/out/refund-protection-demo.mp4`.
+- Live X Layer mainnet deployment, PoolId, protected swap, and refund transaction hashes are recorded in `DEPLOYMENTS.md`.

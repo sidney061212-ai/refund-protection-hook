@@ -1,6 +1,7 @@
 const { ethers } = require("ethers");
 require("dotenv").config();
 const { buildPoolKey, requireEnv } = require("./v4-deploy-utils");
+const { poolIdFromKey } = require("./v4-demo-flow");
 
 const POOL_MANAGER_ABI = [
   "function initialize((address currency0,address currency1,uint24 fee,int24 tickSpacing,address hooks) key,uint160 sqrtPriceX96) external returns (int24 tick)"
@@ -30,6 +31,7 @@ async function main() {
 
   console.log("Network chainId:", chainId);
   console.log("Pool manager:", poolManager);
+  console.log("PoolId:", poolIdFromKey(key));
   console.log("Pool key:", key);
   console.log("sqrtPriceX96:", sqrtPriceX96.toString());
 }
